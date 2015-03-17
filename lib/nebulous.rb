@@ -1,3 +1,5 @@
+require 'csv'
+require 'ostruct'
 require 'nebulous/version'
 require 'nebulous/parser'
 require 'nebulous/header'
