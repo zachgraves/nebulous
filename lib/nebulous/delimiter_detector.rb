@@ -31,7 +31,8 @@ module Nebulous
         counts[index] = ln.split(exp).length - 1
       end
 
-      column_delimiters[max_count]
+      count = counts.each_with_index.max[1]
+      column_delimiters[count]
     end
 
     def detect_line_delimiter
@@ -60,10 +61,6 @@ module Nebulous
 
     def counts
       @counts ||= column_delimiters.map { 0 }
-    end
-
-    def max_count
-      counts.each_with_index.max[1]
     end
 
     def readline

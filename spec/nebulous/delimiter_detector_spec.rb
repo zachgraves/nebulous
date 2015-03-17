@@ -139,19 +139,16 @@ describe Nebulous::DelimiterDetector do
       end
     end
 
-    context '#line_delimiters' do
-    end
-
-    context '#column_delimiters' do
-    end
-
     context '#encoding' do
+      it 'defaults to UTF-8' do
+        expect(detector.send(:encoding)).to eq 'UTF-8'
+      end
     end
 
     context '#counts' do
-    end
-
-    context '#max_count' do
+      it 'returns an array initialized at 0 for each column delimiter' do
+        expect(detector.send(:counts)).to eq [0,0,0,0]
+      end
     end
 
     context '#readline' do
