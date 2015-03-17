@@ -1,8 +1,8 @@
 module Nebulous
   class Parser
     DEFAULT_OPTIONS = {
-      column_delimiter: nil,
-      row_delimiter: nil,
+      col_sep: nil,
+      row_sep: nil,
       quote_char: '"',
       comment_exp: /^#/,
       chunk: false,
@@ -19,6 +19,8 @@ module Nebulous
     def initialize(file, opts = {})
       @options = OpenStruct.new DEFAULT_OPTIONS.merge(opts)
       @file = read_input(file)
+
+      merge_delimiters
     end
 
     def process(&block)
@@ -31,7 +33,7 @@ module Nebulous
         hash = headers.zip(row).to_h
       end
     ensure
-      @file.rewind
+      file.rewind
     end
 
     def delimiters
@@ -52,8 +54,13 @@ module Nebulous
       options.encoding
     end
 
+    def merge_delimiters
+      options.row_sep ||= delimiters[:row_sep]
+      options.col_sep ||= delimiters[:col_sep]
+    end
+
     def line_terminator
-      options.row_delimiter == :auto ? delimiters[:row_delimiter] : options.row_delimiter
+      options.row_sep
     end
   end
 end

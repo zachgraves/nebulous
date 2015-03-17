@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     nebulous (0.0.1)
+      activesupport
       cocaine
 
 GEM

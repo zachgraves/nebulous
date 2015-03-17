@@ -20,8 +20,8 @@ module Nebulous
     end
 
     def detect
-      { column_delimiter: detect_column_delimiter,
-        row_delimiter: detect_line_delimiter }
+      { col_sep: detect_column_delimiter,
+        row_sep: detect_line_delimiter }
     end
 
     def detect_column_delimiter
