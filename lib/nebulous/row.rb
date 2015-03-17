@@ -2,12 +2,12 @@ module Nebulous
   class Row
     def self.map(str, *args)
       opts = args.extract_options!
-      headers = new(str, *args)
+      headers = parse(str, *args)
       map = opts.fetch(:mapping, headers)
       headers.zip(map).to_h
     end
 
-    def initialize(str, *args)
+    def self.parse(str, *args)
       opts = args.extract_options!
 
       str.gsub!(opts[:comment_exp], '')

@@ -25,19 +25,34 @@ module Nebulous
 
     def process(&block)
       headers = Row.map(readline, options) if options[:headers]
+      chunks = []
+      chunk = Chunk.new
       while !file.eof?
         ln = readline
+
         # determine if current line has uneven quotes then read next line
-        ln += readline if ln.count(options.quote_char) % 2
-        row = Row.new(ln, options)
-        hash = headers.zip(row).to_h
+        while ln.count(options.quote_char) % 2 == 1
+          ln += readline
+        end
+
+        row = Row.parse(ln, options)
+        chunk << headers.zip(row).to_h
+
+        if options.chunk && chunk.size == options.chunk.to_i
+          if block_given?
+            yield chunk
+          else
+            chunks << chunk
+          end
+          chunk = Chunk.new
+        end
       end
     ensure
       file.rewind
     end
 
     def delimiters
-      @delimiters ||= DelimiterDetector.new(@file.path).detect
+      @delimiters ||= DelimiterDetector.new(file.path).detect
     end
 
     private

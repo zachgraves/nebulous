@@ -12,9 +12,9 @@ module Nebulous
 
     attr_reader :path
 
-    def initialize(path, opts = {})
+    def initialize(path, *args)
       @path = path
-      @options = opts
+      @options = args.extract_options!
 
       raise ArgumentError unless File.exists?(@path)
     end
