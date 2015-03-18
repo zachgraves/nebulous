@@ -1,22 +1,20 @@
 module Nebulous
   class Row
-    def self.map(str, *args)
-      opts = args.extract_options!
-      headers = parse(str, *args)
-      map = opts.fetch(:mapping, headers)
+    def self.map(str, opts)
+      headers = parse(str, opts).map(&:parameterize).map(&:underscore)
+      map = opts.mapping || headers
       headers.zip(map).to_h
     end
 
-    def self.parse(str, *args)
-      opts = args.extract_options!
-
-      str.gsub!(opts[:comment_exp], '')
+    def self.parse(str, opts)
+      str.gsub!(opts.comment_exp, '')
       str.chomp!
 
       begin
-        data = CSV.parse_line str, opts.slice(:col_sep, :row_sep, :quote_char)
+        args = opts.to_h.slice(:col_sep, :row_sep, :quote_char)
+        data = CSV.parse_line str, args
       rescue CSV::MalformedCSVError
-        exp = /(#{opts[:col_sep]})(?=(?:[^"]|"[^"]*")*$)/
+        exp = /(#{opts.col_sep})(?=(?:[^"]|"[^"]*")*$)/
         data = str.gsub(exp, "\0").split(/\0/)
       end
 

@@ -37,8 +37,19 @@ module Nebulous
         end
 
         row = Row.parse(ln, options)
-        chunk << headers.zip(row).to_h
+        chunk << headers.values.zip(row).to_h
+
+        if options.chunk && chunk.size == options.chunk.to_i
+          if block_given?
+            yield chunk
+          else
+            chunks << chunk
+            chunk = Chunk.new
+          end
+        end
       end
+
+      chunk
     ensure
       file.rewind
     end
@@ -54,7 +65,7 @@ module Nebulous
     end
 
     def readline
-      file.readline(line_terminator).encode(encoding, invalid: :replace)
+      file.readline(line_terminator).encode(encoding, invalid: :replace).chomp
     end
 
     def encoding

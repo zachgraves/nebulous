@@ -2,8 +2,8 @@ module Nebulous
   class DelimiterDetector
     LINE_DELIMITERS = [
       [/CRLF/, "\n"],
-      [/CR, LF/, "\r\n"],
-      [/CR/, "\r"]
+      [/CR, LF/, "\r"],
+      [/CR(?!,)/, "\r"]
     ]
 
     COLUMN_DELIMITERS = [',', ';', "\t", '|']

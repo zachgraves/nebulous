@@ -1,4 +1,4 @@
 module Nebulous
-  class Batch < Array
+  class Chunk < Array
   end
 end

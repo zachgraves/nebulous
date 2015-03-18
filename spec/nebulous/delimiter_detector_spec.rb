@@ -134,7 +134,7 @@ describe Nebulous::DelimiterDetector do
       context 'with CR, LF terminators' do
         let(:path) { './spec/support/assets/cr-lf-comma-delimited.csv' }
         it 'detects expected delimiters' do
-          expect(detector.detect_line_delimiter).to eq "\r\n"
+          expect(detector.detect_line_delimiter).to eq "\r"
         end
       end
     end

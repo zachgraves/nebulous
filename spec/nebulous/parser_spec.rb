@@ -12,18 +12,49 @@ describe Nebulous::Parser do
       end
 
       context 'around options' do
-        let(:parser) { subject.new(path, foo: :bar) }
+        let(:parser) { subject.new(path, foo: :bar, col_sep: "HI!") }
+
         it 'accepts options' do
           expect(parser.options.foo).to eq :bar
+        end
+
+        it 'merges options' do
+          expect(parser.options.col_sep).to eq "HI!"
         end
       end
     end
 
     context '#process' do
-      context 'around batches' do
+      context 'around chunking' do
       end
 
-      context 'around batches: false' do
+      context 'around chunk: false' do
+        let(:data) { parser.process }
+        let(:headers) { data.first.keys }
+        let(:values) { data.first.values }
+
+        it 'returns expected length' do
+          expect(data.length).to eq 20
+        end
+
+        it 'contains expected headers' do
+          expect(headers).to eq %w(first_name last_name from access qty)
+        end
+
+        it 'contains expected values' do
+          expect(values).to eq(
+            ["どーもありがとう", "ミスター·ロボット", "VIP", "VIP", "2"]
+          )
+        end
+      end
+
+      context 'around limits' do
+      end
+
+      context 'around empty values' do
+      end
+
+      context 'when no headers are present' do
       end
     end
 
@@ -50,7 +81,7 @@ describe Nebulous::Parser do
         let(:path) { './spec/support/assets/cr-lf-comma-delimited.csv' }
         it 'returns the expected delimiters' do
           expect(parser.delimiters).to eq(
-            { col_sep: ",", row_sep: "\r\n" }
+            { col_sep: ",", row_sep: "\r" }
           )
         end
       end
@@ -84,14 +115,25 @@ describe Nebulous::Parser do
     context '#readline' do
       it 'reads from file input' do
         expect(parser.send(:readline)).to eq(
-          "First name,Last name,From,Access,Qty\n"
+          "First name,Last name,From,Access,Qty"
         )
         expect(parser.send(:readline)).to eq(
-          "どーもありがとう,ミスター·ロボット,VIP,VIP,2\n"
+          "どーもありがとう,ミスター·ロボット,VIP,VIP,2"
         )
         expect(parser.send(:readline)).to eq(
-          "Meghan,Koch,VIP,VIP,5\n"
+          "Meghan,Koch,VIP,VIP,5"
         )
+      end
+
+      context 'around line terminators' do
+        context 'with CR-LF terminators' do
+          let(:path) { './spec/support/assets/cr-lf-comma-delimited.csv' }
+          it 'reads from file input' do
+            expect(parser.send(:readline)).to eq(
+              "First Name, Last Name"
+            )
+          end
+        end
       end
 
       context 'around encoding', pending: true do
@@ -145,7 +187,7 @@ describe Nebulous::Parser do
       context 'with CR, LF terminators' do
         let(:path) { './spec/support/assets/cr-lf-comma-delimited.csv' }
         it 'sets the expected line terminator' do
-          expect(parser.send(:line_terminator)).to eq "\r\n"
+          expect(parser.send(:line_terminator)).to eq "\r"
         end
       end
 
