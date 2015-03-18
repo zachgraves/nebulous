@@ -101,6 +101,13 @@ describe Nebulous::Parser do
 
       context 'when no headers are present' do
       end
+
+      context 'around rewinding' do
+        it 'can process many times' do
+          parser.process
+          expect(parser.process.length).to eq 20
+        end
+      end
     end
 
     context '#delimiters' do
