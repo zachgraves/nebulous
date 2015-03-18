@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Nebulous::Parser do
   context 'around parsing CSVs' do
     subject { Nebulous::Parser }
+
     let(:path) { './spec/support/assets/crlf-comma-delimited.csv' }
     let(:parser) { subject.new(path) }
 
@@ -25,7 +26,45 @@ describe Nebulous::Parser do
     end
 
     context '#process' do
+      context 'around missing headers' do
+        let(:parser) { subject.new(path, headers: false) }
+
+      end
+
+      context 'around user-provided headers' do
+        let(:map) do
+          {}
+        end
+        let(:parser) { subject.new(path, mapping: map }
+      end
+
       context 'around chunking' do
+        let(:parser) { subject.new(path, chunk: 6) }
+        let(:data) { parser.process }
+
+        it 'returns expected chunk size' do
+          expect(data.size).to eq 4
+        end
+
+        it 'returns expected total rows' do
+          expect(data.map(&:size).inject(:+)).to eq 20
+        end
+
+        context 'with block given' do
+          it 'yields expected chunk size' do
+            count = 0
+            parser.process { count += 1 }
+            expect(count).to eq 4
+          end
+
+          it 'returns expected total rows' do
+            data = []
+            parser.process do |chunk|
+              data << chunk
+            end
+            expect(data.map(&:size).inject(:+)).to eq 20
+          end
+        end
       end
 
       context 'around chunk: false' do

@@ -16,7 +16,9 @@ module Nebulous
     attr_reader :file
     attr_reader :options
 
-    def initialize(file, opts = {})
+    def initialize(file, *args)
+      opts = args.extract_options!
+
       @options = OpenStruct.new DEFAULT_OPTIONS.merge(opts)
       @file = read_input(file)
 
@@ -24,32 +26,22 @@ module Nebulous
     end
 
     def process(&block)
+      result = []
+
       headers = Row.map(readline, options) if options[:headers]
-      chunks = []
+      chunk = Chunk.new(chunk_options)
 
-      chunk = Chunk.new
       while !file.eof?
-        ln = readline
-
-        # determine if current line has uneven quotes then read next line
-        while ln.count(options.quote_char) % 2 == 1
-          ln += readline
-        end
-
-        row = Row.parse(ln, options)
+        row = Row.parse(read_complete_line, options)
         chunk << headers.values.zip(row).to_h
 
-        if options.chunk && chunk.size == options.chunk.to_i
-          if block_given?
-            yield chunk
-          else
-            chunks << chunk
-            chunk = Chunk.new
-          end
+        if options.chunk && chunk_full?(chunk)
+          result << yield_chunk(chunk, &block)
+          chunk = Chunk.new(chunk_options)
         end
       end
 
-      chunk
+      options.chunk ? result : chunk
     ensure
       file.rewind
     end
@@ -60,8 +52,25 @@ module Nebulous
 
     private
 
+    def yield_chunk(chunk, &_block)
+      yield chunk if block_given?
+      chunk
+    end
+
+    def chunk_full?(chunk)
+      chunk.full? || file.eof?
+    end
+
     def read_input(input)
       input.respond_to?(:readline) ? input : File.open(input, "r:#{encoding}")
+    end
+
+    def read_complete_line
+      ln = readline
+      while ln.count(options.quote_char) % 2 == 1
+        ln += readline
+      end
+      ln
     end
 
     def readline
@@ -79,6 +88,12 @@ module Nebulous
 
     def line_terminator
       options.row_sep
+    end
+
+    def chunk_options
+      Hash.new.tap do |attrs|
+        attrs[:size] = options.chunk.to_i if options.chunk
+      end
     end
   end
 end

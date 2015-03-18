@@ -9,4 +9,7 @@ require 'nebulous/chunk'
 require 'nebulous/delimiter_detector'
 
 module Nebulous
+  def self.process(file, *args, &block)
+    Parser.new(file, *args).process(&block)
+  end
 end
