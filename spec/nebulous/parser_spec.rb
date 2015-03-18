@@ -57,7 +57,7 @@ describe Nebulous::Parser do
         end
 
         context 'with block given' do
-          it 'yields expected chunk size' do
+          it 'yields for each chunk' do
             count = 0
             parser.process { count += 1 }
             expect(count).to eq 4
