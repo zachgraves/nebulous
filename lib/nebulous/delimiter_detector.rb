@@ -1,5 +1,3 @@
-require 'cocaine'
-
 module Nebulous
   class DelimiterDetector
     LINE_DELIMITERS = [

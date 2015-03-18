@@ -3,7 +3,7 @@ PATH
   specs:
     nebulous (0.0.1)
       activesupport
-      cocaine
+      cocaine (~> 0.5)
 
 GEM
   remote: https://rubygems.org/
