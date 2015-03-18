@@ -41,7 +41,7 @@ module Nebulous
         end
       end
 
-      options.chunk ? result : chunk
+      options.chunk ? result.size : chunk
     ensure
       file.rewind
     end

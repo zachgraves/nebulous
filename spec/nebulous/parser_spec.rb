@@ -26,16 +26,26 @@ describe Nebulous::Parser do
     end
 
     context '#process' do
-      context 'around missing headers' do
+      context 'around missing headers', pending: true do
         let(:parser) { subject.new(path, headers: false) }
-
       end
 
       context 'around user-provided headers' do
         let(:map) do
-          {}
+          { first_name: :test1, last_name: :test2, qty: :test3 }
         end
-        let(:parser) { subject.new(path, mapping: map }
+
+        let(:parser) { subject.new(path, mapping: map) }
+        let(:data) { parser.process }
+        let(:headers) { data.first.keys }
+
+        it 'returns expected keys' do
+          expect(headers).to eq %i(test1 test2 test3)
+        end
+
+        it 'correctly maps keys to values' do
+          expect(data.first[:test3]).to eq 2
+        end
       end
 
       context 'around chunking' do
@@ -43,11 +53,7 @@ describe Nebulous::Parser do
         let(:data) { parser.process }
 
         it 'returns expected chunk size' do
-          expect(data.size).to eq 4
-        end
-
-        it 'returns expected total rows' do
-          expect(data.map(&:size).inject(:+)).to eq 20
+          expect(data).to eq 4
         end
 
         context 'with block given' do

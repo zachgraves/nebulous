@@ -2,7 +2,7 @@ module Nebulous
   class Row
     def self.map(str, opts)
       headers = parse(str, opts).map(&:parameterize).map(&:underscore)
-      map = opts.mapping || headers
+      map = opts.mapping.try(:values) || headers
       headers.zip(map).to_h
     end
 
