@@ -103,7 +103,7 @@ describe Nebulous::Parser do
       end
 
       context 'around rewinding' do
-        it 'can process many times' do
+        it 'parser can process many times' do
           parser.process
           expect(parser.process.length).to eq 20
         end
