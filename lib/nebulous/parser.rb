@@ -26,6 +26,7 @@ module Nebulous
     def process(&block)
       headers = Row.map(readline, options) if options[:headers]
       chunks = []
+
       chunk = Chunk.new
       while !file.eof?
         ln = readline
@@ -37,15 +38,6 @@ module Nebulous
 
         row = Row.parse(ln, options)
         chunk << headers.zip(row).to_h
-
-        if options.chunk && chunk.size == options.chunk.to_i
-          if block_given?
-            yield chunk
-          else
-            chunks << chunk
-          end
-          chunk = Chunk.new
-        end
       end
     ensure
       file.rewind
