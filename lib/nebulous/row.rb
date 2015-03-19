@@ -1,9 +1,11 @@
 module Nebulous
-  class Row
-    def self.map(str, opts)
-      headers = parse(str, opts).map(&:parameterize).map(&:underscore)
-      map = opts.mapping.try(:values) || headers
-      headers.zip(map).to_h
+  class Row < Array
+    def self.headers(str, opts)
+      headers = parse(str, opts).
+        map(&:parameterize).
+        map(&:underscore).
+        map(&:to_sym)
+      headers.zip(headers).to_h
     end
 
     def self.parse(str, opts)
@@ -18,7 +20,28 @@ module Nebulous
         data = str.gsub(exp, "\0").split(/\0/)
       end
 
-      data.map(&:strip)
+      data.map!(&:strip)
+      new(data).to_numeric
+    end
+
+    def to_numeric
+      arr = map do |val|
+        case val
+        when /^[+-]?\d+\.\d+$/
+          val.to_i
+        when /^[+-]?\d+$/
+          val.to_i
+        else
+          val
+        end
+      end
+
+      self.class.new(arr)
+    end
+
+    def merge(keys)
+      return self unless keys
+      keys.values.zip(self).to_h
     end
   end
 end

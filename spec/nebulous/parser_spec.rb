@@ -26,8 +26,24 @@ describe Nebulous::Parser do
     end
 
     context '#process' do
-      context 'around missing headers', pending: true do
+      context 'around limits' do
+        let(:parser) { subject.new(path, limit: 1) }
+        it 'returns expected chunk size' do
+          expect(parser.process.length).to eq 1
+        end
+      end
+
+      context 'around missing headers' do
+        let(:path) { './spec/support/assets/no-headers.csv' }
         let(:parser) { subject.new(path, headers: false) }
+
+        it 'returns unmapped data' do
+          expect(parser.process.first.to_a).to be_instance_of Array
+        end
+
+        it 'returns expected chunk size' do
+          expect(parser.process.length).to eq 20
+        end
       end
 
       context 'around user-provided headers' do
@@ -50,10 +66,9 @@ describe Nebulous::Parser do
 
       context 'around chunking' do
         let(:parser) { subject.new(path, chunk: 6) }
-        let(:data) { parser.process }
 
-        it 'returns expected chunk size' do
-          expect(data).to eq 4
+        it 'returns entire dataset when no block passed' do
+          expect(parser.process.length).to eq 20
         end
 
         context 'with block given' do
@@ -83,12 +98,12 @@ describe Nebulous::Parser do
         end
 
         it 'contains expected headers' do
-          expect(headers).to eq %w(first_name last_name from access qty)
+          expect(headers).to eq %i(first_name last_name from access qty)
         end
 
         it 'contains expected values' do
           expect(values).to eq(
-            ["どーもありがとう", "ミスター·ロボット", "VIP", "VIP", "2"]
+            ["どーもありがとう", "ミスター·ロボット", "VIP", "VIP", 2]
           )
         end
       end

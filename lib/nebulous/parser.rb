@@ -26,23 +26,11 @@ module Nebulous
     end
 
     def process(&block)
-      result = []
-
-      headers = Row.map(readline, options) if options[:headers]
-      chunk = Chunk.new(chunk_options)
-
-      while !file.eof?
-        row = Row.parse(read_complete_line, options)
-        chunk << headers.values.zip(row).to_h
-
-        if options.chunk && chunk_full?(chunk)
-          result << yield_chunk(chunk, &block)
-          chunk = Chunk.new(chunk_options)
-        end
-      end
-
-      options.chunk ? result.size : chunk
+      @headers ||= read_headers
+      iterate(&block)
     ensure
+      @headers = nil
+      @chunk = nil
       file.rewind
     end
 
@@ -50,15 +38,41 @@ module Nebulous
       @delimiters ||= DelimiterDetector.new(file.path).detect
     end
 
-    private
-
-    def yield_chunk(chunk, &_block)
-      yield chunk if block_given?
-      chunk
+    def chunk
+      @chunk ||= Chunk.new chunk_options
     end
 
-    def chunk_full?(chunk)
-      chunk.full? || file.eof?
+    private
+
+    def reset
+      @chunk = nil
+    end
+
+    def read_headers
+      Row.headers(readline, options) if options[:headers]
+    end
+
+    def iterate(&block)
+      while !file.eof?
+        chunk << replace_keys(parse_row.merge(@headers))
+        yield_chunk(chunk, &block) if options.chunk && block_given?
+      end
+      @chunk
+    end
+
+    def parse_row
+      Row.parse(read_complete_line, options)
+    end
+
+    def yield_chunk(chunk, &_block)
+      if chunk.full? || file.eof?
+        yield chunk.map(&:to_a)
+        @chunk = nil
+      end
+    end
+
+    def chunk?(chunk)
+      options.chunk && (chunk.full? || file.eof?)
     end
 
     def read_input(input)
@@ -94,6 +108,13 @@ module Nebulous
       Hash.new.tap do |attrs|
         attrs[:size] = options.chunk.to_i if options.chunk
       end
+    end
+
+    def replace_keys(row)
+      return row unless options.mapping
+      row.map do |key, value|
+        [options.mapping[key], value] if options.mapping.has_key?(key)
+      end.compact.to_h
     end
   end
 end
