@@ -9,7 +9,6 @@ module Nebulous
       headers: true,
       mapping: nil,
       limit: false,
-      remove_empty_values: true,
       encoding: Encoding::UTF_8.to_s
     }
 
@@ -57,7 +56,7 @@ module Nebulous
     def iterate(&block)
       while !file.eof?
         break if limit?
-        chunk << replace_keys(parse_row.merge(@headers))
+        chunk << replace_keys(parse_row)
         yield_chunk(chunk, &block) if block_given? && options.chunk
       end
 
@@ -74,7 +73,7 @@ module Nebulous
 
     def parse_row
       sequence
-      Row.parse(read_complete_line, options)
+      Row.parse(read_complete_line, options).merge(@headers)
     end
 
     def yield_chunk(chunk, &_block)
