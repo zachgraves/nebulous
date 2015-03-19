@@ -26,11 +26,11 @@ module Nebulous
     end
 
     def process(&block)
-      @headers ||= read_headers
+      @index = 0
+      read_headers
       iterate(&block)
     ensure
-      @headers = nil
-      @chunk = nil
+      reset
       file.rewind
     end
 
@@ -38,29 +38,42 @@ module Nebulous
       @delimiters ||= DelimiterDetector.new(file.path).detect
     end
 
+    private
+
+    def reset
+      @index = 0
+      @headers = nil
+      @chunk = nil
+    end
+
     def chunk
       @chunk ||= Chunk.new chunk_options
     end
 
-    private
-
-    def reset
-      @chunk = nil
-    end
-
     def read_headers
-      Row.headers(readline, options) if options[:headers]
+      @headers ||= Row.headers(readline, options) if options[:headers]
     end
 
     def iterate(&block)
       while !file.eof?
+        break if limit?
         chunk << replace_keys(parse_row.merge(@headers))
-        yield_chunk(chunk, &block) if options.chunk && block_given?
+        yield_chunk(chunk, &block) if block_given? && options.chunk
       end
-      @chunk
+
+      @chunk.to_a
+    end
+
+    def sequence
+      @index += 1
+    end
+
+    def limit?
+      options.limit && options.limit == @index
     end
 
     def parse_row
+      sequence
       Row.parse(read_complete_line, options)
     end
 
@@ -69,10 +82,6 @@ module Nebulous
         yield chunk.map(&:to_a)
         @chunk = nil
       end
-    end
-
-    def chunk?(chunk)
-      options.chunk && (chunk.full? || file.eof?)
     end
 
     def read_input(input)

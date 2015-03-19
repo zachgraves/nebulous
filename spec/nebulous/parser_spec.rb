@@ -27,9 +27,27 @@ describe Nebulous::Parser do
 
     context '#process' do
       context 'around limits' do
-        let(:parser) { subject.new(path, limit: 1) }
-        it 'returns expected chunk size' do
-          expect(parser.process.length).to eq 1
+        let(:parser) { subject.new(path, limit: limit) }
+
+        context 'with zero limit' do
+          let(:limit) { 0 }
+          it 'returns empty data set' do
+            expect(parser.process).to be_empty
+          end
+        end
+
+        context 'with in-bounds limit' do
+          let(:limit) { 2 }
+          it 'returns expected chunk size' do
+            expect(parser.process.length).to eq 2
+          end
+        end
+
+        context 'with out of bounds limit' do
+          let(:limit) { 1_000_000 }
+          it 'returns expected chunk size' do
+            expect(parser.process.length).to eq 20
+          end
         end
       end
 
