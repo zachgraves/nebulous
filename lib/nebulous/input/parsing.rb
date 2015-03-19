@@ -24,7 +24,7 @@ module Nebulous
 
       def yield_chunk(chunk, &_block)
         if chunk.full? || file.eof?
-          yield chunk.map(&:to_a)
+          yield chunk
           @chunk = nil
         end
       end
