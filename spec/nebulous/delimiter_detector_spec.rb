@@ -20,7 +20,7 @@ describe Nebulous::DelimiterDetector do
       context 'with CRLF and comma delimiters' do
         it 'detects expected delimiters' do
           expect(detector.detect).to eq(
-            { column_delimiter: ",", row_delimiter: "\n" }
+            { col_sep: ",", row_sep: "\n" }
           )
         end
       end
@@ -29,7 +29,7 @@ describe Nebulous::DelimiterDetector do
         let(:path) { './spec/support/assets/crlf-tab-delimited.tsv' }
         it 'detects expected delimiters' do
           expect(detector.detect).to eq(
-            { column_delimiter: "\t", row_delimiter: "\n" }
+            { col_sep: "\t", row_sep: "\n" }
           )
         end
       end
@@ -38,7 +38,7 @@ describe Nebulous::DelimiterDetector do
         let(:path) { './spec/support/assets/cr-comma-delimited.csv' }
         it 'detects expected delimiters' do
           expect(detector.detect).to eq(
-            { column_delimiter: ",", row_delimiter: "\r" }
+            { col_sep: ",", row_sep: "\r" }
           )
         end
       end
@@ -47,7 +47,7 @@ describe Nebulous::DelimiterDetector do
         let(:path) { './spec/support/assets/crlf-semicolon-delimited.csv' }
         it 'detects expected delimiters' do
           expect(detector.detect).to eq(
-            { column_delimiter: ";", row_delimiter: "\n" }
+            { col_sep: ";", row_sep: "\n" }
           )
         end
       end
@@ -56,7 +56,7 @@ describe Nebulous::DelimiterDetector do
         let(:path) { './spec/support/assets/crlf-pipe-delimited.csv' }
         it 'detects expected delimiters' do
           expect(detector.detect).to eq(
-            { column_delimiter: "|", row_delimiter: "\n" }
+            { col_sep: "|", row_sep: "\n" }
           )
         end
       end
@@ -70,7 +70,7 @@ describe Nebulous::DelimiterDetector do
 
         it 'detects expected delimiters' do
           expect(detector.detect).to eq(
-            { column_delimiter: "$", row_delimiter: "\n" }
+            { col_sep: "$", row_sep: "\n" }
           )
         end
       end
@@ -134,7 +134,7 @@ describe Nebulous::DelimiterDetector do
       context 'with CR, LF terminators' do
         let(:path) { './spec/support/assets/cr-lf-comma-delimited.csv' }
         it 'detects expected delimiters' do
-          expect(detector.detect_line_delimiter).to eq "\r\n"
+          expect(detector.detect_line_delimiter).to eq "\r"
         end
       end
     end

@@ -1,27 +1,25 @@
-require 'cocaine'
-
 module Nebulous
   class DelimiterDetector
     LINE_DELIMITERS = [
       [/CRLF/, "\n"],
-      [/CR, LF/, "\r\n"],
-      [/CR/, "\r"]
+      [/CR, LF/, "\r"],
+      [/CR(?!,)/, "\r"]
     ]
 
     COLUMN_DELIMITERS = [',', ';', "\t", '|']
 
     attr_reader :path
 
-    def initialize(path, opts = {})
+    def initialize(path, *args)
       @path = path
-      @options = opts
+      @options = args.extract_options!
 
       raise ArgumentError unless File.exists?(@path)
     end
 
     def detect
-      { column_delimiter: detect_column_delimiter,
-        row_delimiter: detect_line_delimiter }
+      { col_sep: detect_column_delimiter,
+        row_sep: detect_line_delimiter }
     end
 
     def detect_column_delimiter
