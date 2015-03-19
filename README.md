@@ -1,5 +1,7 @@
 # Nebulous
 
+[![Build Status](https://travis-ci.org/zachgraves/nebulous.svg)](https://travis-ci.org/zachgraves/nebulous.svg)
+
 Easily read CSV files. Less murderous rage.
 
 ## Installation
