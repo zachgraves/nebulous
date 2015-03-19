@@ -9,14 +9,15 @@ module Nebulous
     end
 
     def self.parse(str, opts)
-      str.gsub!(opts.comment_exp, '')
+      opts = opts.to_h
+      str.gsub!(opts[:comment_exp], '')
       str.chomp!
 
       begin
-        args = opts.to_h.slice(:col_sep, :row_sep, :quote_char)
+        args = opts.slice(:col_sep, :row_sep, :quote_char)
         data = CSV.parse_line str, args
       rescue CSV::MalformedCSVError
-        exp = /(#{opts.col_sep})(?=(?:[^"]|"[^"]*")*$)/
+        exp = /(#{opts[:col_sep]})(?=(?:[^"]|"[^"]*")*$)/
         data = str.gsub(exp, "\0").split(/\0/)
       end
 
@@ -28,7 +29,7 @@ module Nebulous
       arr = map do |val|
         case val
         when /^[+-]?\d+\.\d+$/
-          val.to_i
+          val.to_f
         when /^[+-]?\d+$/
           val.to_i
         else
