@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    nebulous (0.0.3)
+    nebulous (0.0.4)
       activesupport
       cocaine (~> 0.5)
 
