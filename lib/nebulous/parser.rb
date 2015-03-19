@@ -9,7 +9,6 @@ module Nebulous
       headers: true,
       mapping: nil,
       limit: false,
-      remove_empty_values: true,
       encoding: Encoding::UTF_8.to_s
     }
 
