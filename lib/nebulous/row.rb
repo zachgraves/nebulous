@@ -22,7 +22,7 @@ module Nebulous
       end
 
       data.map!(&:strip)
-      new(data).to_numeric
+      new(data)
     end
 
     def to_numeric
