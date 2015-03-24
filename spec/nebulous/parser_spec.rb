@@ -25,6 +25,16 @@ describe Nebulous::Parser do
       end
     end
 
+    context '#headers' do
+      context 'around fetching headers' do
+        it 'returns expected headers' do
+          expect(parser.headers).to eq(
+            ["First name", "Last name", "From", "Access", "Qty"]
+          )
+        end
+      end
+    end
+
     context '#process' do
       context 'around limits' do
         let(:parser) { subject.new(path, limit: limit) }
