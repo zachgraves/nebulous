@@ -7,11 +7,12 @@ module Nebulous
       end
 
       def raw_headers
-        Row.parse(readline, options)
+        ln = read_complete_line
+        Row.parse(ln, options)
       end
 
       def read_headers
-        @headers ||= Row.headers(readline, options) if options[:headers]
+        @headers ||= Row.headers(read_complete_line, options)
       end
 
       def chunk
