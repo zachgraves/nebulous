@@ -28,6 +28,11 @@ module Nebulous
       merge_delimiters
     end
 
+    def headers
+      @file.rewind
+      raw_headers
+    end
+
     def process(&block)
       @index = 0
       read_headers
