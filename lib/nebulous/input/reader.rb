@@ -7,7 +7,7 @@ module Nebulous
 
       def read_complete_line
         ln = readline
-        while ln.count(options.quote_char) % 2 == 1
+        while ln.empty? || ln.count(options.quote_char) % 2 == 1
           ln += readline
         end
         ln

@@ -32,6 +32,18 @@ describe Nebulous::Parser do
             ["First name", "Last name", "From", "Access", "Qty"]
           )
         end
+
+        context 'around empty lines' do
+          let(:path) do
+            './spec/support/assets/crlf-comma-delimited-emptyline.csv'
+          end
+
+          it 'returns expected headers' do
+            expect(parser.headers).to eq(
+              ["First name", "Last name", "From", "Access", "Qty"]
+            )
+          end
+        end
       end
     end
 

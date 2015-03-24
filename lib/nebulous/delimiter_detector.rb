@@ -62,7 +62,15 @@ module Nebulous
     end
 
     def readline
-      File.open(path, &:readline).encode(encoding, invalid: :replace)
+      ln = ''
+
+      File.open(path, 'r') do |io|
+        while ln.chomp.empty?
+          ln += io.readline
+        end
+      end
+
+      ln.encode(encoding, invalid: :replace)
     end
   end
 end
