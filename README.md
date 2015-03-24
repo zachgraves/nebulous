@@ -1,6 +1,6 @@
 # Nebulous
 
-[![Build Status](https://travis-ci.org/zachgraves/nebulous.svg)](https://travis-ci.org/zachgraves/nebulous.svg)
+[![Build Status](https://travis-ci.org/zachgraves/nebulous.svg?branch=master)](https://travis-ci.org/zachgraves/nebulous)
 
 Easily read CSV files. Less murderous rage.
 
