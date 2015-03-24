@@ -35,7 +35,7 @@ module Nebulous
 
     def process(&block)
       @index = 0
-      read_headers
+      read_headers if options[:headers]
       iterate(&block)
     ensure
       reset
