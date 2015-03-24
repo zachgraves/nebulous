@@ -6,6 +6,10 @@ module Nebulous
         Row.parse(read_complete_line, options).to_numeric.merge(@headers)
       end
 
+      def raw_headers
+        Row.parse(readline, options)
+      end
+
       def read_headers
         @headers ||= Row.headers(readline, options) if options[:headers]
       end
