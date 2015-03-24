@@ -35,6 +35,13 @@ describe Nebulous::Row do
         end
       end
 
+      context 'with empty values' do
+        it 'returns expected parsed result' do
+          row = subject.parse ",Austin, Artisan ", options
+          expect(row).to eq ['', 'Austin', 'Artisan']
+        end
+      end
+
       context 'with malformed csv' do
         it 'returns expected parsed result' do
           row = subject.parse 'raw denim, Austin "TX, US", artisan', options

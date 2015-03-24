@@ -21,8 +21,7 @@ module Nebulous
         data = str.gsub(exp, "\0").split(/\0/)
       end
 
-      data.map!(&:strip)
-      new(data)
+      new data.map(&:to_s).map(&:strip)
     end
 
     def to_numeric
