@@ -18,6 +18,7 @@ Or install it yourself as:
 
     $ gem install nebulous
 
+
 ## Usage
 
 Nebulous is a bit easier going than other CSV libraries for Ruby. It will parse
