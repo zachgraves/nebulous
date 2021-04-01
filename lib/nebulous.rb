@@ -1,6 +1,6 @@
 require 'csv'
 require 'ostruct'
-require 'cocaine'
+require 'terrapin'
 require 'active_support/all'
 require 'nebulous/version'
 require 'nebulous/delimiter_detector'
