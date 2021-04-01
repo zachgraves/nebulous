@@ -16,7 +16,7 @@ module Nebulous
 
       def read_headers
         file.rewind
-        options.start.times { file.gets } if options.start
+        options.start&.times { file.gets } if options.start
 
         Row.headers(read_complete_line, options)
       end
