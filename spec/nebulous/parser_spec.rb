@@ -104,6 +104,22 @@ describe Nebulous::Parser do
         end
       end
 
+      context 'around headers_line' do
+        let(:path) { './spec/support/assets/headers-on-secondary-line.csv' }
+
+        let(:parser) { subject.new(path, start: 1) }
+        let(:data) { parser.process }
+        let(:headers) { data.first.keys }
+
+        it 'returns expected keys' do
+          expect(headers).to eq %i(first_name last_name from access qty)
+        end
+
+        it 'correctly maps keys to values' do
+          expect(data.first[:qty]).to eq 2
+        end
+      end
+
       context 'around chunking' do
         let(:parser) { subject.new(path, chunk: 6) }
 

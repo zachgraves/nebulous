@@ -11,6 +11,7 @@ module Nebulous
       comment_exp: /^#/,
       chunk: false,
       headers: true,
+      start: 0,
       mapping: nil,
       limit: false,
       encoding: Encoding::UTF_8.to_s
@@ -35,7 +36,7 @@ module Nebulous
 
     def process(&block)
       @index = 0
-      read_headers if options[:headers]
+      get_headers if options[:headers]
       iterate(&block)
     ensure
       reset

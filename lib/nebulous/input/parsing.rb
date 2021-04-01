@@ -7,12 +7,16 @@ module Nebulous
       end
 
       def raw_headers
-        ln = read_complete_line
-        Row.parse(ln, options)
+        Row.parse(read_complete_line, options)
+      end
+
+      def get_headers
+        @headers ||= read_headers
       end
 
       def read_headers
-        @headers ||= Row.headers(read_complete_line, options)
+        options.start.times { file.gets } if options.start
+        Row.headers(read_complete_line, options)
       end
 
       def chunk
