@@ -34,7 +34,7 @@ module Nebulous
     end
 
     def detect_line_delimiter
-      res = Cocaine::CommandLine.new('file', ':path').run(path: path).chomp
+      res = Terrapin::CommandLine.new('file', ':path').run(path: path).chomp
 
       map = line_delimiters.map do |sep|
         sep[1] if res =~ sep[0]
