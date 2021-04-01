@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Nebulous::Parser do
-  context 'around parsing CSVs' do
+  context 'around parsing CSVs:' do
     subject { Nebulous::Parser }
 
     let(:path) { './spec/support/assets/crlf-comma-delimited.csv' }
@@ -174,7 +174,7 @@ describe Nebulous::Parser do
       end
 
       context 'around rewinding' do
-        it 'parser can process many times' do
+        it 'can process many times' do
           parser.process
           expect(parser.process.length).to eq 20
         end

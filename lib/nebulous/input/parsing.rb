@@ -3,19 +3,21 @@ module Nebulous
     module Parsing
       def parse_row
         sequence
-        Row.parse(read_complete_line, options).to_numeric.merge(@headers)
+        Row.parse(read_complete_line, options).to_numeric.merge(header_hash)
       end
 
       def raw_headers
         Row.parse(read_complete_line, options)
       end
 
-      def get_headers
-        @headers ||= read_headers
+      def header_hash
+        @header_hash ||= read_headers
       end
 
       def read_headers
+        file.rewind
         options.start.times { file.gets } if options.start
+
         Row.headers(read_complete_line, options)
       end
 
