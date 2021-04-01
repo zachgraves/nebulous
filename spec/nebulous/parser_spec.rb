@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Nebulous::Parser do
-  context 'around parsing CSVs' do
+  context 'around parsing CSVs:' do
     subject { Nebulous::Parser }
 
     let(:path) { './spec/support/assets/crlf-comma-delimited.csv' }
@@ -104,6 +104,22 @@ describe Nebulous::Parser do
         end
       end
 
+      context 'around headers_line' do
+        let(:path) { './spec/support/assets/headers-on-secondary-line.csv' }
+
+        let(:parser) { subject.new(path, start: 1) }
+        let(:data) { parser.process }
+        let(:headers) { data.first.keys }
+
+        it 'returns expected keys' do
+          expect(headers).to eq %i(first_name last_name from access qty)
+        end
+
+        it 'correctly maps keys to values' do
+          expect(data.first[:qty]).to eq 2
+        end
+      end
+
       context 'around chunking' do
         let(:parser) { subject.new(path, chunk: 6) }
 
@@ -158,7 +174,7 @@ describe Nebulous::Parser do
       end
 
       context 'around rewinding' do
-        it 'parser can process many times' do
+        it 'can process many times' do
           parser.process
           expect(parser.process.length).to eq 20
         end
