@@ -15,7 +15,7 @@ module Nebulous
 
       begin
         args = opts.slice(:col_sep, :row_sep, :quote_char)
-        data = CSV.parse_line str, args
+        data = CSV.parse_line str, **args
       rescue CSV::MalformedCSVError
         exp = /(#{opts[:col_sep]})(?=(?:[^"]|"[^"]*")*$)/
         data = str.gsub(exp, "\0").split(/\0/)
