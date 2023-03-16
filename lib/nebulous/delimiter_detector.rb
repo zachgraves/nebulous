@@ -14,7 +14,7 @@ module Nebulous
       @path = path
       @options = args.extract_options!
 
-      raise ArgumentError unless File.exists?(@path)
+      raise ArgumentError unless File.exist?(@path)
     end
 
     def detect
